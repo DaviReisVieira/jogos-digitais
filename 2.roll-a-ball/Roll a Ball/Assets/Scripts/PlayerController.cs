@@ -9,10 +9,20 @@ public class PlayerController : MonoBehaviour
 
     public float speed = 3.0f;
     public TextMeshProUGUI countText;
-    public GameObject winTextObject;
+    public TextMeshProUGUI timerText;
+    public GameObject winPanelObject;
+    public GameObject losePanelObject;
 
     private Rigidbody rb;
+    
     private int count;
+    private float timer = 90.0f;
+    private bool isWin = false;
+
+    private int life = 4;
+    public GameObject[] lifeObjects;
+
+
     private float movementX;
     private float movementY;
 
@@ -22,7 +32,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         count = 0; 
         SetCountText();   
-        winTextObject.SetActive(false);    
+        winPanelObject.SetActive(false);   
+        losePanelObject.SetActive(false); 
     }
 
     void OnMove(InputValue movementValue)
@@ -37,10 +48,17 @@ public class PlayerController : MonoBehaviour
 
     void SetCountText()
     {
-        countText.text = "Count: " + count.ToString();
+        countText.text = "Targets: " + count.ToString() + "/12";
         if (count >= 12)
         {
-            winTextObject.SetActive(true);
+            winPanelObject.SetActive(true);
+            isWin = true;
+            // lock moviment
+            movementX = 0;
+            movementY = 0;
+
+            // lock all
+            rb.constraints = RigidbodyConstraints.FreezeAll;
         }
     }
 
@@ -59,6 +77,78 @@ public class PlayerController : MonoBehaviour
             count = count + 1;     
 
             SetCountText();       
+        }
+        
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("WallEnemy"))
+        {
+            Debug.Log("Collision with WallEnemy");
+
+            life = life - 1;
+            lifeObjects[life].SetActive(false);
+
+            if (life <= 0)
+            {
+                losePanelObject.SetActive(true);
+                // lock moviment
+                movementX = 0;
+                movementY = 0;
+
+                // lock all
+                rb.constraints = RigidbodyConstraints.FreezeAll;
+
+
+            }
+        }
+    }
+
+    void UpdateTimer(float timerValue)
+    {
+        timerValue += 1;
+
+        float minutes = Mathf.FloorToInt(timerValue / 60);
+        float seconds = Mathf.FloorToInt(timerValue % 60);
+        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+
+    void Update()
+    {
+        if (timer > 0 && !isWin && life > 0)
+        {
+            timer -= Time.deltaTime;
+            UpdateTimer(timer);
+        }
+        else if (timer <= 0 && !isWin)
+        {
+            losePanelObject.SetActive(true);
+            // lock moviment
+            movementX = 0;
+            movementY = 0;
+
+            // lock all
+            rb.constraints = RigidbodyConstraints.FreezeAll;
+        }
+
+        if (transform.position.y < -20)
+        {
+            // lost all lifes
+            for (int i = 0; i < life; i++)
+            {
+                lifeObjects[i].SetActive(false);
+            }
+            
+            life = 0;
+
+            losePanelObject.SetActive(true);
+            // lock moviment
+            movementX = 0;
+            movementY = 0;
+
+            // lock all
+            rb.constraints = RigidbodyConstraints.FreezeAll;
         }
         
     }

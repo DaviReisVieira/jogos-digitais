@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - PickUp
+  - WallEnemy
   layers:
   - Default
   - TransparentFX
