@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class WinPanel : MonoBehaviour
 {
+
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -14,4 +15,5 @@ public class WinPanel : MonoBehaviour
     {
         SceneManager.LoadScene(0);
     }
+
 }

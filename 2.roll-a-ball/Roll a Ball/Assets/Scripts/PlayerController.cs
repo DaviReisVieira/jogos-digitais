@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
     public TextMeshProUGUI timerText;
     public GameObject winPanelObject;
     public GameObject losePanelObject;
+    public AudioSource audioPickUp;
+    public AudioSource audioSourceEnemy;
 
     private Rigidbody rb;
     
@@ -74,8 +76,9 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("PickUp"))
         {
             other.gameObject.SetActive(false);
-            count = count + 1;     
+            count = count + 1; 
 
+            audioPickUp.Play();  
             SetCountText();       
         }
         
@@ -88,6 +91,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Collision with WallEnemy");
 
             life = life - 1;
+            audioSourceEnemy.Play();
             lifeObjects[life].SetActive(false);
 
             if (life <= 0)

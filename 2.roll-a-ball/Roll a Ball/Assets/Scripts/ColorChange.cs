@@ -8,7 +8,9 @@ public class ColorChange : MonoBehaviour
 
     void Update()
     {
-        Background.color = Color.Lerp(Background.color, new Color(Random.value, Random.value, Random.value), Time.deltaTime * 0.5f);
+        // change background color between primary colors with time of 0.8 seconds
+        Background.color = Color.Lerp(Color.red, Color.green, Mathf.PingPong(Time.time, 0.8f));
+        
 
     }
 }
